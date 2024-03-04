@@ -29,37 +29,6 @@ const Characters = () => {
   const searchString = useSelector(selectSearchString);
   const selectedIndex = useSelector(selectSelectedIndex);
 
-  let filteredQuotes = searchError
-    ? quotes
-    : quotes.filter((el) => {
-        const name = el.character.toLowerCase();
-        return name.includes(searchString.toLowerCase());
-      });
-
-  if (filteredQuotes.length > 0) {
-    switch (filteredQuotes.filter((el) => el.selected).length) {
-      case 0:
-        const newSelectedIndex = quotes.findIndex(
-          (el) => el === filteredQuotes[0]
-        );
-        // dispatch(selectedItem(newSelectedIndex));
-        filteredQuotes[0].selected = true;
-
-        break;
-      case 1:
-        break;
-      default: // More than one selected
-        filteredQuotes = filteredQuotes.map((el) => {
-          el.selected = false;
-          return el;
-        });
-
-        filteredQuotes[selectedIndex].selected = true;
-    }
-  }
-
-  const selectedElement = useRef();
-
   useEffect(() => {
     if (selectedElement.current) {
       selectedElement.current.scrollIntoView({
@@ -69,6 +38,37 @@ const Characters = () => {
       });
     }
   }, [selectedIndex]);
+
+  const filteredQuotes = searchError
+    ? quotes
+    : quotes.filter((el) => {
+        const name = el.character.toLowerCase();
+        return name.includes(searchString.toLowerCase());
+      });
+
+  // if (filteredQuotes.length > 0) {
+  //   switch (filteredQuotes.filter((el) => el.selected).length) {
+  //     case 0:
+  //       const newSelectedIndex = quotes.findIndex(
+  //         (el) => el === filteredQuotes[0]
+  //       );
+  //       // dispatch(selectedItem(newSelectedIndex));
+  //       filteredQuotes[0].selected = true;
+
+  //       break;
+  //     case 1:
+  //       break;
+  //     default: // More than one selected
+  //       filteredQuotes = filteredQuotes.map((el) => {
+  //         el.selected = false;
+  //         return el;
+  //       });
+
+  //       filteredQuotes[selectedIndex].selected = true;
+  //   }
+  // }
+
+  const selectedElement = useRef();
 
   if (quotes.length === 0) {
     return (
