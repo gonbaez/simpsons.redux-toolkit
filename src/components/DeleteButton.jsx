@@ -6,6 +6,7 @@ import { TbTrashX } from "react-icons/tb";
 import styles from "../styles/DeleteButton.module.css";
 
 import { useDispatch } from "react-redux";
+import { deleteItem, deleteItemConfirm } from "../redux/quotesSlice";
 
 const DeleteButton = ({ deleteConfirm, id }) => {
   const dispatch = useDispatch();
@@ -18,13 +19,13 @@ const DeleteButton = ({ deleteConfirm, id }) => {
         }
         onClick={() => {
           if (!deleteConfirm) {
-            dispatch({ type: DELETE, payload: id });
+            dispatch(deleteItem(id));
 
             const timeoutId = setTimeout(() => {
-              dispatch({ type: DELETE, payload: id });
+              dispatch(deleteItem(id));
             }, 3000);
           } else {
-            dispatch({ type: DELETE_CONFIRM, payload: id });
+            dispatch(deleteItemConfirm(id));
           }
         }}
       >

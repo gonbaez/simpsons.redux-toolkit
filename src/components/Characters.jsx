@@ -12,17 +12,51 @@ import { useDispatch, useSelector } from "react-redux";
 import { getQuotes } from "../functions/getQuotes.js";
 
 import {
-  selectFilteredQuotes,
-  selectNonFilteredDataLength,
+  filterQuotes,
+  resetQuotes,
+  selectQuotes,
+  selectSearchError,
+  selectSearchString,
   selectSelectedIndex,
+  selectedItem,
 } from "../redux/quotesSlice.js";
 
 const Characters = () => {
   const dispatch = useDispatch();
 
-  const data = useSelector(selectFilteredQuotes);
-  const nonFilteredDataLength = useSelector(selectNonFilteredDataLength);
+  const quotes = useSelector(selectQuotes);
+  const searchError = useSelector(selectSearchError);
+  const searchString = useSelector(selectSearchString);
   const selectedIndex = useSelector(selectSelectedIndex);
+
+  let filteredQuotes = searchError
+    ? quotes
+    : quotes.filter((el) => {
+        const name = el.character.toLowerCase();
+        return name.includes(searchString.toLowerCase());
+      });
+
+  if (filteredQuotes.length > 0) {
+    switch (filteredQuotes.filter((el) => el.selected).length) {
+      case 0:
+        const newSelectedIndex = quotes.findIndex(
+          (el) => el === filteredQuotes[0]
+        );
+        // dispatch(selectedItem(newSelectedIndex));
+        filteredQuotes[0].selected = true;
+
+        break;
+      case 1:
+        break;
+      default: // More than one selected
+        filteredQuotes = filteredQuotes.map((el) => {
+          el.selected = false;
+          return el;
+        });
+
+        filteredQuotes[selectedIndex].selected = true;
+    }
+  }
 
   const selectedElement = useRef();
 
@@ -36,13 +70,13 @@ const Characters = () => {
     }
   }, [selectedIndex]);
 
-  if (!nonFilteredDataLength) {
+  if (quotes.length === 0) {
     return (
       <>
         <IoRefreshCircle
           onClick={() => {
-            dispatch({ type: "RESET" });
-            getQuotes(dispatch);
+            dispatch(resetQuotes());
+            getQuotes();
           }}
           className={styles.refreshButton}
         />
@@ -50,26 +84,22 @@ const Characters = () => {
     );
   }
 
-  if (!data.length) {
+  if (!filteredQuotes.length) {
     return (
       <LuSearchX
-        onClick={() => dispatch({ type: "FILTER", payload: "" })}
+        onClick={() => dispatch(filterQuotes(""))}
         style={{ cursor: "pointer" }}
         className={styles.refreshButton}
       />
     );
   }
 
-  // const selectedIndex = data.findIndex((el) => el.selected);
-
-  return <p>Hello</p>;
-
   return (
     <>
       {selectedIndex ? <ScrollButtom direction="left" /> : null}
       <ul className={styles.characterList}>
         <div className={styles.emptyListItem}></div>
-        {data.map((element) => {
+        {filteredQuotes.map((element) => {
           return (
             <Character
               {...element}
@@ -80,7 +110,7 @@ const Characters = () => {
         })}
         <div className={styles.emptyListItem}></div>
       </ul>
-      {selectedIndex === data.length - 1 ? null : (
+      {selectedIndex === filteredQuotes.length - 1 ? null : (
         <ScrollButtom direction="right" />
       )}
     </>

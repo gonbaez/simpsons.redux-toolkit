@@ -13,10 +13,8 @@ import { getQuotes } from "./functions/getQuotes";
 import { useDispatch } from "react-redux";
 
 const App = () => {
-  const dispatch = useDispatch();
-
   useEffect(() => {
-    getQuotes(dispatch);
+    getQuotes();
   }, []);
 
   return (

@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   filterQuotes,
-  selectFilteredQuotes,
+  selectQuotes,
   selectSearchError,
   selectSearchString,
 } from "../redux/quotesSlice";
@@ -20,7 +20,14 @@ const Controls = () => {
 
   const searchError = useSelector(selectSearchError);
   const searchString = useSelector(selectSearchString);
-  const filteredQuotes = useSelector(selectFilteredQuotes);
+  const quotes = useSelector(selectQuotes);
+
+  const filteredQuotes = searchError
+    ? quotes
+    : quotes.filter((el) => {
+        const name = el.character.toLowerCase();
+        return name.includes(searchString.toLowerCase());
+      });
 
   const likes = filteredQuotes.filter((el) => el.like).length;
   const characters = filteredQuotes.length;

@@ -2,6 +2,7 @@ import React from "react";
 
 import styles from "../styles/ScrollButton.module.css";
 import { useDispatch } from "react-redux";
+import { scroll } from "../redux/quotesSlice";
 
 const ScrollButton = ({ direction, onScroll }) => {
   const dispatch = useDispatch();
@@ -9,12 +10,7 @@ const ScrollButton = ({ direction, onScroll }) => {
   return (
     <>
       <button
-        onClick={() =>
-          dispatch({
-            type: SCROLL,
-            payload: direction === "left" ? -1 : 1,
-          })
-        }
+        onClick={() => dispatch(scroll(direction === "left" ? -1 : 1))}
         className={styles.scrollButton}
         style={direction === "left" ? { left: "10%" } : { right: "10%" }}
       >

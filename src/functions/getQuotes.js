@@ -2,8 +2,9 @@ import axios from "axios";
 import offlineData from "../offlineData";
 
 import { setQuotes } from "../redux/quotesSlice";
+import { store } from "../redux/store";
 
-export const getQuotes = async (dispatch, count = 50) => {
+export const getQuotes = async (count = 50) => {
   const response = await axios.get(
     `https://thesimpsonsquoteapi.glitch.me/quotes?count=${count}`
   );
@@ -15,8 +16,9 @@ export const getQuotes = async (dispatch, count = 50) => {
 
   response.data.map((el, idx) => {
     el.id = idx;
+    el.selected = false;
     return el;
   });
 
-  dispatch(setQuotes(response.data));
+  store.dispatch(setQuotes(response.data));
 };

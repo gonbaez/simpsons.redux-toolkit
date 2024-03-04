@@ -7,6 +7,8 @@ import styles from "../styles/LikeButton.module.css";
 
 import { useDispatch } from "react-redux";
 
+import { likeItem } from "../redux/quotesSlice";
+
 const LikeButton = ({ like, id }) => {
   const dispatch = useDispatch();
 
@@ -14,7 +16,7 @@ const LikeButton = ({ like, id }) => {
     <>
       <button
         onClick={() => {
-          dispatch({ type: LIKE, payload: id });
+          dispatch(likeItem(id));
         }}
         className={styles.likeButton}
       >
