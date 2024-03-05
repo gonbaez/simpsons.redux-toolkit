@@ -13,6 +13,8 @@ import {
   selectQuotes,
   selectSearchError,
   selectSearchString,
+  selectLikes,
+  selectCharacters,
 } from "../redux/quotesSlice";
 
 const Controls = () => {
@@ -20,17 +22,9 @@ const Controls = () => {
 
   const searchError = useSelector(selectSearchError);
   const searchString = useSelector(selectSearchString);
-  const quotes = useSelector(selectQuotes);
 
-  const filteredQuotes = searchError
-    ? quotes
-    : quotes.filter((el) => {
-        const name = el.character.toLowerCase();
-        return name.includes(searchString.toLowerCase());
-      });
-
-  const likes = filteredQuotes.filter((el) => el.like).length;
-  const characters = filteredQuotes.length;
+  const likes = useSelector(selectLikes);
+  const characters = useSelector(selectCharacters);
 
   return (
     <>

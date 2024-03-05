@@ -14,20 +14,18 @@ import { getQuotes } from "../functions/getQuotes.js";
 import {
   filterQuotes,
   resetQuotes,
+  selectFilteredQuotes,
   selectQuotes,
-  selectSearchError,
-  selectSearchString,
-  selectSelectedIndex,
+  selectSelectedId,
   selectedItem,
 } from "../redux/quotesSlice.js";
 
 const Characters = () => {
   const dispatch = useDispatch();
+  const selectedElement = useRef();
 
   const quotes = useSelector(selectQuotes);
-  const searchError = useSelector(selectSearchError);
-  const searchString = useSelector(selectSearchString);
-  const selectedIndex = useSelector(selectSelectedIndex);
+  const selectedId = useSelector(selectSelectedId);
 
   useEffect(() => {
     if (selectedElement.current) {
@@ -37,38 +35,17 @@ const Characters = () => {
         inline: "center",
       });
     }
-  }, [selectedIndex]);
+  }, [selectedId]);
 
-  const filteredQuotes = searchError
-    ? quotes
-    : quotes.filter((el) => {
-        const name = el.character.toLowerCase();
-        return name.includes(searchString.toLowerCase());
-      });
+  const filteredQuotes = useSelector(selectFilteredQuotes);
 
-  // if (filteredQuotes.length > 0) {
-  //   switch (filteredQuotes.filter((el) => el.selected).length) {
-  //     case 0:
-  //       const newSelectedIndex = quotes.findIndex(
-  //         (el) => el === filteredQuotes[0]
-  //       );
-  //       // dispatch(selectedItem(newSelectedIndex));
-  //       filteredQuotes[0].selected = true;
+  const selectedQuote = filteredQuotes.findIndex((el) => el.id === selectedId);
 
-  //       break;
-  //     case 1:
-  //       break;
-  //     default: // More than one selected
-  //       filteredQuotes = filteredQuotes.map((el) => {
-  //         el.selected = false;
-  //         return el;
-  //       });
-
-  //       filteredQuotes[selectedIndex].selected = true;
-  //   }
-  // }
-
-  const selectedElement = useRef();
+  console.log(selectedQuote);
+  if (selectedQuote < 0) {
+    // Selected quote not in filtered results
+    dispatch(selectedItem(filteredQuotes[0].id));
+  }
 
   if (quotes.length === 0) {
     return (
@@ -96,7 +73,7 @@ const Characters = () => {
 
   return (
     <>
-      {selectedIndex ? <ScrollButtom direction="left" /> : null}
+      {<ScrollButtom direction="left" />}
       <ul className={styles.characterList}>
         <div className={styles.emptyListItem}></div>
         {filteredQuotes.map((element) => {
@@ -110,9 +87,7 @@ const Characters = () => {
         })}
         <div className={styles.emptyListItem}></div>
       </ul>
-      {selectedIndex === filteredQuotes.length - 1 ? null : (
-        <ScrollButtom direction="right" />
-      )}
+      {<ScrollButtom direction="right" />}
     </>
   );
 };

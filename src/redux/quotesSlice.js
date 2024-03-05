@@ -11,10 +11,8 @@ export const quotesSlice = createSlice({
     setQuotes: (state, action) => {
       const quotes = action.payload;
 
-      quotes[0].selected = true;
-
       state.quotes = quotes;
-      state.selectedIndex = 0;
+      state.selectedId = quotes[0].id;
     },
     filterQuotes: (state, action) => {
       const searchValue = action.payload;
@@ -48,21 +46,29 @@ export const quotesSlice = createSlice({
     scroll: (state, action) => {
       const quotes = state.quotes;
       const scrollOffset = action.payload;
+      const searchError = state.filter.searchError;
+      const searchString = state.filter.searchString;
 
-      const index = quotes.findIndex((el) => el.selected);
+      const selectedId = state.selectedId;
 
-      if (index + scrollOffset < 0 || index + scrollOffset >= quotes.length) {
+      const filteredQuotes = searchError
+        ? quotes
+        : quotes.filter((el) => {
+            const name = el.character.toLowerCase();
+            return name.includes(searchString.toLowerCase());
+          });
+
+      const index = filteredQuotes.findIndex((el) => el.id === selectedId);
+
+      if (
+        index + scrollOffset < 0 ||
+        index + scrollOffset >= filteredQuotes.length
+      ) {
         // No changes.
         return;
       }
 
-      quotes.forEach((el) => {
-        el.selected = false;
-      });
-
-      quotes[index + scrollOffset].selected = true;
-
-      state.selectedIndex = index + scrollOffset;
+      state.selectedId = filteredQuotes[index + scrollOffset].id;
     },
     deleteItem: (state, action) => {
       const idToDelete = action.payload;
@@ -104,7 +110,7 @@ export const quotesSlice = createSlice({
       state = initialState;
     },
     selectedItem: (state, action) => {
-      state.selectedIndex = action.payload;
+      state.selectedId = action.payload;
     },
   },
 });
@@ -123,6 +129,28 @@ export const {
 export const selectQuotes = (state) => state.quotes.quotes;
 export const selectSearchString = (state) => state.quotes.filter.searchString;
 export const selectSearchError = (state) => state.quotes.filter.searchError;
-export const selectSelectedIndex = (state) => state.quotes.selectedIndex;
+export const selectSelectedId = (state) => state.quotes.selectedId;
+export const selectFilteredQuotes = (state) => {
+  const quotes = state.quotes.quotes;
+  const searchError = state.quotes.filter.searchError;
+  const searchString = state.quotes.filter.searchString;
+
+  return searchError
+    ? quotes
+    : quotes.filter((el) => {
+        const name = el.character.toLowerCase();
+        return name.includes(searchString.toLowerCase());
+      });
+};
+export const selectLikes = (state) => {
+  const filteredQuotes = selectFilteredQuotes(state);
+
+  return filteredQuotes.filter((el) => el.like).length;
+};
+export const selectCharacters = (state) => {
+  const filteredQuotes = selectFilteredQuotes(state);
+
+  return filteredQuotes.length;
+};
 
 export default quotesSlice.reducer;

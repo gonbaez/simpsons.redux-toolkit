@@ -16,7 +16,6 @@ export const getQuotes = async (count = 50) => {
 
   response.data.map((el, idx) => {
     el.id = idx;
-    el.selected = false;
     return el;
   });
 

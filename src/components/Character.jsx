@@ -8,19 +8,23 @@ import { FaQuoteLeft } from "react-icons/fa6";
 import { FaQuoteRight } from "react-icons/fa6";
 
 import classNames from "classnames";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { selectSelectedId } from "../redux/quotesSlice";
 
 const Character = ({
   quote,
   image,
   character,
   characterDirection,
-  selected,
   like,
   id,
   deleteConfirm,
   selectedElement,
 }) => {
+  const selectedId = useSelector(selectSelectedId);
+
+  const selected = selectedId === id;
+
   return (
     <li
       className={classNames(
