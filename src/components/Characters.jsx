@@ -41,7 +41,6 @@ const Characters = () => {
 
   const selectedQuote = filteredQuotes.findIndex((el) => el.id === selectedId);
 
-  console.log(selectedQuote);
   if (selectedQuote < 0) {
     // Selected quote not in filtered results
     dispatch(selectedItem(filteredQuotes[0].id));

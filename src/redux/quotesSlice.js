@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { searchSchema } from "../functions/validationSchemas.js";
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { initialState } from "./initialState.js";
 
 export const quotesSlice = createSlice({
@@ -130,18 +130,6 @@ export const selectQuotes = (state) => state.quotes.quotes;
 export const selectSearchString = (state) => state.quotes.filter.searchString;
 export const selectSearchError = (state) => state.quotes.filter.searchError;
 export const selectSelectedId = (state) => state.quotes.selectedId;
-export const selectFilteredQuotes = (state) => {
-  const quotes = state.quotes.quotes;
-  const searchError = state.quotes.filter.searchError;
-  const searchString = state.quotes.filter.searchString;
-
-  return searchError
-    ? quotes
-    : quotes.filter((el) => {
-        const name = el.character.toLowerCase();
-        return name.includes(searchString.toLowerCase());
-      });
-};
 export const selectLikes = (state) => {
   const filteredQuotes = selectFilteredQuotes(state);
 
@@ -152,5 +140,16 @@ export const selectCharacters = (state) => {
 
   return filteredQuotes.length;
 };
+export const selectFilteredQuotes = createSelector(
+  [selectQuotes, selectSearchString, selectSearchError],
+  (quotes, searchString, searchError) => {
+    return searchError
+      ? quotes
+      : quotes.filter((el) => {
+          const name = el.character.toLowerCase();
+          return name.includes(searchString.toLowerCase());
+        });
+  }
+);
 
 export default quotesSlice.reducer;
