@@ -17,7 +17,6 @@ import {
   selectFilteredQuotes,
   selectQuotes,
   selectSelectedId,
-  selectedItem,
 } from "../redux/quotesSlice.js";
 
 const Characters = () => {
@@ -39,12 +38,7 @@ const Characters = () => {
 
   const filteredQuotes = useSelector(selectFilteredQuotes);
 
-  const selectedQuote = filteredQuotes.findIndex((el) => el.id === selectedId);
-
-  if (selectedQuote < 0) {
-    // Selected quote not in filtered results
-    dispatch(selectedItem(filteredQuotes[0].id));
-  }
+  const selectedCharacter = filteredQuotes.find((el) => el.id >= selectedId);
 
   if (quotes.length === 0) {
     return (
@@ -80,6 +74,7 @@ const Characters = () => {
             <Character
               {...element}
               selectedElement={selectedElement}
+              selectedId={selectedCharacter.id}
               key={element.id}
             />
           );
