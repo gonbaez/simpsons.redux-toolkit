@@ -31,6 +31,12 @@ export const quotesSlice = createSlice({
         return;
       }
 
+      const filteredQuotes = state.quotes.filter((el) => {
+        const name = el.character.toLowerCase();
+        return name.includes(searchValue.toLowerCase());
+      });
+
+      state.selectedId = filteredQuotes[0].id;
       state.filter.searchString = searchValue;
       state.filter.searchError = "";
     },
