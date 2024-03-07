@@ -18,10 +18,11 @@ const Character = ({
   characterDirection,
   like,
   id,
+  selectedId,
   deleteConfirm,
   selectedElement,
 }) => {
-  const selectedId = useSelector(selectSelectedId);
+  // const selectedId = useSelector(selectSelectedId);
 
   const selected = selectedId === id;
 
